@@ -18,7 +18,7 @@ Development environment:
 
 ```
 Python: 3.10.9
-OS: Ubuntu 20.04.6 LTS
+OS: Ubuntu 22.04 LTS
 ```
 
 Third-party dependencies:
