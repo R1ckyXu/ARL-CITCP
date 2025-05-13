@@ -113,20 +113,20 @@ class PrioLearning(object):
 
     def process_scenario(self, sc):
 
-        result = process_scenario_new(self.agent, sc, self.preprocess_function)
+        result, flag = process_scenario_new(self.agent, sc, self.preprocess_function)
 
         reward = self.reward_function(result, sc)
         sumr = sum(reward)
         if sumr <= self.ut:
             self.agent.reward(reward, experceInPoll=False)
-            result = process_scenario_new(self.agent, sc, self.preprocess_function)  # repredict
+            result, flag = process_scenario_new(self.agent, sc, self.preprocess_function)  # repredict
             reward = self.reward_function(result, sc)
             self.agent.reward(reward)
         else:
             self.agent.reward(reward)
 
         self.ut = sumr
-        return result, reward
+        return result, reward, flag
 
     def replay_experience(self, batch_size):
         batch = self.replay_memory.get_batch(batch_size)
@@ -169,9 +169,13 @@ class PrioLearning(object):
         for (i, sc) in enumerate(self.scenario_provider, start=1):
             start = time.time()
 
-            (result, reward) = self.process_scenario(sc)
+            (result, reward, flag) = self.process_scenario(sc)
             end = time.time()
 
+            # region
+            if flag:
+                continue
+            # endregion
             sum_scenarios += 1
             duration = end - start
 

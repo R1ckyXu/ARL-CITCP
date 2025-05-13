@@ -47,6 +47,8 @@ class VirtualScenario(object):
 
         assert undetected_failures + detected_failures == total_failure_count
 
+        # Determine if all test cases have passed
+        flag = False
         if total_failure_count > 0:
             ttf = detection_ranks[0] if detection_ranks else 0
 
@@ -63,8 +65,9 @@ class VirtualScenario(object):
             napfd = 1
             recall = 1
             avg_precision = 1
+            flag = True
 
-        return [detected_failures, undetected_failures, ttf, napfd, recall, avg_precision, detection_ranks]
+        return [detected_failures, undetected_failures, ttf, napfd, recall, avg_precision, detection_ranks], flag
 
     def get_ta_metadata(self):
         execTimes, durations = zip(*[(tc['LastRun'], tc['Duration']) for tc in self.testcases()])
